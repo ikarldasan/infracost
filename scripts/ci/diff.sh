@@ -210,6 +210,16 @@ post_to_bitbucket () {
   fi
 }
 
+post_to_azure_devops () {
+  echo "Posting comment to Azure DevOps pull-request $SYSTEM_PULLREQUEST_PULLREQUESTID"
+  msg="$(build_msg true)"
+
+  jq -Mnc --arg msg "$msg" '{"comments": [{"parentCommentId": 0, "content": "\($msg)", "commentType": 1}], "status": 4}' | curl -L -X POST -d @- \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer $SYSTEM_ACCESSTOKEN" \
+    "$SYSTEM_TEAMFOUNDATIONCOLLECTIONURI$SYSTEM_TEAMPROJECT/_apis/git/repositories/$BUILD_REPOSITORY_ID/pullRequests/$SYSTEM_PULLREQUEST_PULLREQUESTID/threads?api-version=6.0"
+}
+
 cleanup () {
   rm -f infracost_breakdown.json infracost_breakdown_cmd infracost_output_cmd
 }
@@ -278,6 +288,8 @@ elif [ ! -z "$CIRCLECI" ]; then
   post_to_circle_ci
 elif [ ! -z "$BITBUCKET_PIPELINES" ]; then
   post_to_bitbucket
+elif [ ! -z "$SYSTEM_PULLREQUEST_PULLREQUESTID" ]; then
+  post_to_azure_devops
 fi
 
 cleanup
