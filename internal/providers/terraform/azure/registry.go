@@ -32,6 +32,7 @@ var ResourceRegistry []*schema.RegistryItem = []*schema.RegistryItem{
 	GetAzureRMAppNATGatewayRegistryItem(),
 	GetAzureRMAppServiceCustomHostnameBindingRegistryItem(),
 	GetAzureRMNotificationHubsRegistryItem(),
+	GetAzureRMEventHubsRegistryItem(),
 }
 
 // FreeResources grouped alphabetically
@@ -93,6 +94,9 @@ var FreeResources []string = []string{
 
 	// Azure Notification Hub
 	"azurerm_notification_hub",
+
+	// Azure Event Hub
+	"azurerm_eventhub",
 }
 
 var UsageOnlyResources []string = []string{}
